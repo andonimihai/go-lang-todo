@@ -1,19 +1,29 @@
 {
  "todos": [
   {
-   "id": "a5a78c74-0449-435a-a342-f92e101396c8",
-   "title": "first todo",
+   "id": "202a3ee8-8841-4cd0-a92b-526ceccfaa15",
+   "title": "updating title",
    "state": "open"
   },
   {
-   "id": "a8e27193-ea20-40a2-a3f4-7dde1c4237f2",
-   "title": "updated title",
+   "id": "2706aa0c-8705-45aa-b6e0-5f3e4fc2906b",
+   "title": "water plants",
+   "state": "open"
+  },
+  {
+   "id": "58fac60e-1eaf-4230-beb0-25851d600784",
+   "title": "drink water",
+   "state": "open"
+  },
+  {
+   "id": "f37a4c5d-7967-487e-b159-33f3905f5beb",
+   "title": "write code",
+   "state": "completed"
+  },
+  {
+   "id": "66237c81-f762-48d1-9f4a-f74791f83f7e",
+   "title": "prepare coffee",
    "state": "deleted"
-  },
-  {
-   "id": "4b0ad4ee-2146-47bf-b8fb-a16a94142e9f",
-   "title": "testing persistence",
-   "state": "open"
   }
  ]
 }
