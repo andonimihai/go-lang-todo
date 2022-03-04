@@ -1,0 +1,19 @@
+{
+ "todos": [
+  {
+   "id": "a5a78c74-0449-435a-a342-f92e101396c8",
+   "title": "first todo",
+   "state": "open"
+  },
+  {
+   "id": "a8e27193-ea20-40a2-a3f4-7dde1c4237f2",
+   "title": "updated title",
+   "state": "deleted"
+  },
+  {
+   "id": "4b0ad4ee-2146-47bf-b8fb-a16a94142e9f",
+   "title": "testing persistence",
+   "state": "open"
+  }
+ ]
+}
