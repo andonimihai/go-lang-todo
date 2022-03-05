@@ -34,12 +34,13 @@ func Init() {
 	json.Unmarshal(byteValue, &todos)
 }
 
-func GetAllTodos() entity.Todos {
-
+func GetAllTodos() []entity.Todo {
+	var todos []entity.Todo
+	entity.DB.Find(&todos).Limit(10).Offset(0)
 	return todos
 }
 
-func SaveTodos(todos *entity.Todos) {
+func saveTodos(todos *entity.Todos) {
 	file, _ := json.MarshalIndent(todos, "", " ")
 
 	_ = ioutil.WriteFile(todoFileName, file, 0644)
@@ -54,7 +55,7 @@ func CreateTodo(title string) entity.TODO {
 	todo.Title = title
 	todos.Todos = append(todos.Todos, todo)
 
-	SaveTodos(&todos)
+	saveTodos(&todos)
 	return todo
 }
 
@@ -94,7 +95,7 @@ func UpdateTodoName(id string, newTitle string) (entity.TODO, error) {
 
 	todos.Todos[todoIdx].Title = newTitle
 
-	SaveTodos(&todos)
+	saveTodos(&todos)
 
 	return todos.Todos[todoIdx], nil
 
@@ -118,7 +119,7 @@ func CompleteTodo(id string) (entity.TODO, error) {
 
 	todos.Todos[todoIdx].State = "completed"
 
-	SaveTodos(&todos)
+	saveTodos(&todos)
 
 	return todos.Todos[todoIdx], nil
 
@@ -141,7 +142,7 @@ func DeleteTodo(id string) (entity.TODO, error) {
 
 	todos.Todos[todoIdx].State = "deleted"
 
-	SaveTodos(&todos)
+	saveTodos(&todos)
 
 	return todos.Todos[todoIdx], nil
 
