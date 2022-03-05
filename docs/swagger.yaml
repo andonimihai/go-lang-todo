@@ -1,3 +1,34 @@
+definitions:
+  entity.Todo:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      title:
+        type: string
+      todoListID:
+        type: integer
+      updatedAt:
+        type: string
+      userID:
+        type: integer
+    type: object
+  entity.UpsertTodo:
+    properties:
+      title:
+        type: string
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
 host: localhost:3009
 info:
   contact: {}
@@ -7,9 +38,47 @@ info:
 paths:
   /todo:
     get:
+      description: Fetch a list of Todos that belongs to logged in user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Todo'
+            type: array
+      summary: Get all todos
+    post:
       consumes:
       - application/json
-      description: get string by ID
+      description: Add a new todo to the list
+      parameters:
+      - description: Add new todo
+        in: body
+        name: todo
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UpsertTodo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Todo'
+      summary: Add a new todo
+  /todo/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete Todo by ID
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -17,5 +86,66 @@ paths:
           description: ok
           schema:
             type: string
-      summary: Add a new pet to the store
+      summary: Delete Todo
+    get:
+      consumes:
+      - application/json
+      description: get Todo by ID
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Todo'
+      summary: Fetch single Todo Item
+    put:
+      consumes:
+      - application/json
+      description: update Todo by ID
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update todo
+        in: body
+        name: todo
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UpsertTodo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Todo'
+      summary: Update existing Todo
+  /todo/{id}/complete:
+    put:
+      consumes:
+      - application/json
+      description: complete Todo by ID
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Todo'
+      summary: Complete a Todo
 swagger: "2.0"

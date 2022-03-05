@@ -8,11 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//
 // @Summary Get all todos
-// @Accept  json
+// @Description Fetch a list of Todos that belongs to logged in user
 // @Produce  json
-// @Success 200 {object}
+// @Success 200 {array} entity.Todo
 // @Router /todo [get]
 func GetAllTodos(ctx *gin.Context) {
 	todos := service.GetAllTodos()
@@ -23,13 +22,13 @@ func GetAllTodos(ctx *gin.Context) {
 
 }
 
-//
-// @Summary Add a new pet to the store
-// @Description get string by ID
+// @Summary Add a new todo
+// @Description Add a new todo to the list
 // @Accept  json
 // @Produce  json
-// @Success 200 {string} string	"ok"
-// @Router /todo [get]
+// @Param todo body entity.UpsertTodo true "Add new todo"
+// @Success 201 {object} entity.Todo
+// @Router /todo [post]
 func AddTodo(ctx *gin.Context) {
 	todo := entity.TODO{}
 
@@ -39,34 +38,35 @@ func AddTodo(ctx *gin.Context) {
 	}
 
 	newTodo := service.CreateTodo(todo.Title)
-	ctx.JSON(http.StatusAccepted, &newTodo)
+	ctx.JSON(http.StatusCreated, &newTodo)
 }
 
-//
-// @Summary Add a new pet to the store
-// @Description get string by ID
+// @Summary Fetch single Todo Item
+// @Description get Todo by ID
 // @Accept  json
 // @Produce  json
-// @Success 200 {string} string	"ok"
-// @Router /todo [get]
+// @Param id path int  true "Todo ID"
+// @Success 200 {object} entity.Todo
+// @Router /todo/{id} [get]
 func GetSingleTodo(ctx *gin.Context) {
 	id := ctx.Param("id")
 	todo, err := service.GetTodoById(id)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, err)
+		ctx.JSON(http.StatusNotFound, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusAccepted, &todo)
+	ctx.JSON(http.StatusOK, &todo)
 }
 
-//
-// @Summary Add a new pet to the store
-// @Description get string by ID
+// @Summary Update existing Todo
+// @Description update Todo by ID
 // @Accept  json
 // @Produce  json
-// @Success 200 {string} string	"ok"
-// @Router /todo [get]
+// @Param id path int  true "Todo ID"
+// @Param todo body entity.UpsertTodo true "Update todo"
+// @Success 200 {object} entity.Todo
+// @Router /todo/{id} [put]
 func UpdateTodo(ctx *gin.Context) {
 	id := ctx.Param("id")
 	todo := entity.TODO{}
@@ -82,16 +82,16 @@ func UpdateTodo(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusAccepted, &updatedTodo)
+	ctx.JSON(http.StatusOK, &updatedTodo)
 }
 
-//
-// @Summary Add a new pet to the store
-// @Description get string by ID
+// @Summary Complete a Todo
+// @Description complete Todo by ID
 // @Accept  json
 // @Produce  json
-// @Success 200 {string} string	"ok"
-// @Router /todo [get]
+// @Param id path int  true "Todo ID"
+// @Success 200 {object} entity.Todo
+// @Router /todo/{id}/complete [put]
 func CompleteTodo(ctx *gin.Context) {
 	id := ctx.Param("id")
 	todo, err := service.CompleteTodo(id)
@@ -100,23 +100,23 @@ func CompleteTodo(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusAccepted, &todo)
+	ctx.JSON(http.StatusOK, &todo)
 }
 
-//
-// @Summary Add a new pet to the store
-// @Description get string by ID
+// @Summary Delete Todo
+// @Description delete Todo by ID
 // @Accept  json
 // @Produce  json
+// @Param id path int  true "Todo ID"
 // @Success 200 {string} string	"ok"
-// @Router /todo [get]
+// @Router /todo/{id} [delete]
 func DeleteTodo(ctx *gin.Context) {
 	id := ctx.Param("id")
-	_, err := service.DeleteTodo(id)
+	err := service.DeleteTodo(id)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, err)
 		return
 	}
 
-	ctx.JSON(http.StatusAccepted, "")
+	ctx.JSON(http.StatusOK, "")
 }
