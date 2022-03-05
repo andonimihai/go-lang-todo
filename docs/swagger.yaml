@@ -1,0 +1,21 @@
+host: localhost:3009
+info:
+  contact: {}
+  description: This is a sample server Petstore server.
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /todo:
+    get:
+      consumes:
+      - application/json
+      description: get string by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: Add a new pet to the store
+swagger: "2.0"
