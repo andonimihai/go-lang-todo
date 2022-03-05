@@ -30,7 +30,7 @@ func GetAllTodos(ctx *gin.Context) {
 // @Success 201 {object} entity.Todo
 // @Router /todo [post]
 func AddTodo(ctx *gin.Context) {
-	todo := entity.TODO{}
+	todo := entity.UpsertTodo{}
 
 	if err := ctx.BindJSON(&todo); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
@@ -69,7 +69,7 @@ func GetSingleTodo(ctx *gin.Context) {
 // @Router /todo/{id} [put]
 func UpdateTodo(ctx *gin.Context) {
 	id := ctx.Param("id")
-	todo := entity.TODO{}
+	todo := entity.UpsertTodo{}
 
 	if err := ctx.BindJSON(&todo); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
