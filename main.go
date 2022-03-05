@@ -4,7 +4,6 @@ import (
 	"go-gin-todo/controller"
 	"go-gin-todo/docs"
 	"go-gin-todo/entity"
-	"go-gin-todo/service"
 
 	"github.com/gin-gonic/gin"
 
@@ -21,7 +20,6 @@ var Router *gin.Engine
 // @host localhost:3009
 
 func main() {
-	service.Init()
 	entity.ConnectDB()
 
 	Router = gin.New()

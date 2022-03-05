@@ -1,38 +1,15 @@
 package service
 
 import (
-	"encoding/json"
-	"errors"
-	"fmt"
 	"go-gin-todo/entity"
-	"io/ioutil"
-	"os"
-
-	"github.com/google/uuid"
 )
 
-var todoFileName = "todo.json"
+type TodoState string
 
-var todos entity.Todos
-
-func Init() {
-	// Open our jsonFile
-	jsonFile, err := os.Open(todoFileName)
-	// if we os.Open returns an error then handle it
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println("Successfully Opened todo.json")
-	// defer the closing of our jsonFile so that we can parse it later on
-	defer jsonFile.Close()
-
-	// read our opened jsonFile as a byte array.
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-
-	// we unmarshal our byteArray which contains our
-	// jsonFile's content into 'todos' which we defined above
-	json.Unmarshal(byteValue, &todos)
-}
+const (
+	Open      TodoState = "open"
+	Completed TodoState = "completed"
+)
 
 func GetAllTodos() []entity.Todo {
 	var todos []entity.Todo
@@ -40,110 +17,74 @@ func GetAllTodos() []entity.Todo {
 	return todos
 }
 
-func saveTodos(todos *entity.Todos) {
-	file, _ := json.MarshalIndent(todos, "", " ")
+func CreateTodo(title string) entity.Todo {
 
-	_ = ioutil.WriteFile(todoFileName, file, 0644)
+	todo := entity.Todo{Title: title, State: string(Open)}
 
-}
+	result := entity.DB.Create(&todo)
 
-func CreateTodo(title string) entity.TODO {
-	id := uuid.New()
-	var todo entity.TODO
-	todo.ID = id.String()
-	todo.State = "open"
-	todo.Title = title
-	todos.Todos = append(todos.Todos, todo)
+	if result.Error != nil {
+		panic(result.Error)
+	}
 
-	saveTodos(&todos)
 	return todo
 }
 
-func GetTodoById(id string) (entity.TODO, error) {
-	var foundTodo entity.TODO
-	found := false
-	for _, todo := range todos.Todos {
-		if todo.ID == id {
-			foundTodo = todo
-			found = true
-			break
-		}
+func GetTodoById(id string) (entity.Todo, error) {
+	var todo entity.Todo
+	result := entity.DB.First(&todo, id)
+
+	if result.Error != nil {
+		return todo, result.Error
 	}
 
-	if found {
-		return foundTodo, nil
-	}
-
-	return foundTodo, errors.New("not Found")
+	return todo, nil
 
 }
 
-func UpdateTodoName(id string, newTitle string) (entity.TODO, error) {
-	todoIdx := -1
+func UpdateTodoName(id string, newTitle string) (entity.Todo, error) {
+	var todo entity.Todo
+	result := entity.DB.First(&todo, id)
 
-	for idx, todo := range todos.Todos {
-		fmt.Println(idx)
-		if todo.ID == id {
-			todoIdx = idx
-			break
-		}
+	if result.Error != nil {
+		return todo, result.Error
 	}
 
-	if todoIdx == -1 {
-		return entity.TODO{}, errors.New("not found")
+	todo.Title = newTitle
+	saveResult := entity.DB.Save(&todo)
+
+	if saveResult.Error != nil {
+		return todo, saveResult.Error
 	}
 
-	todos.Todos[todoIdx].Title = newTitle
+	return todo, nil
+}
 
-	saveTodos(&todos)
+func CompleteTodo(id string) (entity.Todo, error) {
+	var todo entity.Todo
+	result := entity.DB.First(&todo, id)
 
-	return todos.Todos[todoIdx], nil
+	if result.Error != nil {
+		return todo, result.Error
+	}
+
+	todo.State = string(Completed)
+	saveResult := entity.DB.Save(&todo)
+
+	if saveResult.Error != nil {
+		return todo, saveResult.Error
+	}
+
+	return todo, nil
 
 }
 
-func CompleteTodo(id string) (entity.TODO, error) {
-
-	todoIdx := -1
-
-	for idx, todo := range todos.Todos {
-		fmt.Println(idx)
-		if todo.ID == id {
-			todoIdx = idx
-			break
-		}
+func DeleteTodo(id string) error {
+	result := entity.DB.Delete(&entity.Todo{}, id)
+	if result.Error != nil {
+		return result.Error
 	}
 
-	if todoIdx == -1 {
-		return entity.TODO{}, errors.New("not found")
-	}
-
-	todos.Todos[todoIdx].State = "completed"
-
-	saveTodos(&todos)
-
-	return todos.Todos[todoIdx], nil
-
-}
-
-func DeleteTodo(id string) (entity.TODO, error) {
-	todoIdx := -1
-
-	for idx, todo := range todos.Todos {
-		fmt.Println(idx)
-		if todo.ID == id {
-			todoIdx = idx
-			break
-		}
-	}
-
-	if todoIdx == -1 {
-		return entity.TODO{}, errors.New("not found")
-	}
-
-	todos.Todos[todoIdx].State = "deleted"
-
-	saveTodos(&todos)
-
-	return todos.Todos[todoIdx], nil
+	return nil
 
 }
