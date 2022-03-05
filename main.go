@@ -4,6 +4,7 @@ import (
 	"go-gin-todo/controller"
 	"go-gin-todo/docs"
 	"go-gin-todo/entity"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 
@@ -25,6 +26,10 @@ func main() {
 	Router = gin.New()
 	docs.SwaggerInfo.BasePath = "/api"
 	Router.Use(gin.Logger())
+
+	Router.GET("/ping", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, "Pong")
+	})
 
 	api := Router.Group("/api")
 	{
