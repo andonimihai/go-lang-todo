@@ -4,6 +4,8 @@ import (
 	"go-gin-todo/controller"
 	"go-gin-todo/docs"
 	"go-gin-todo/entity"
+	"go-gin-todo/lib"
+	"go-gin-todo/middleware"
 	"log"
 	"net/http"
 	"reflect"
@@ -33,10 +35,14 @@ func main() {
 	}
 
 	entity.ConnectDB()
+	lib.InitFirebaseAuth()
 
 	Router = gin.New()
 	docs.SwaggerInfo.BasePath = "/api"
+
 	Router.Use(gin.Logger())
+	// using the auth middle ware to validate api requests
+	Router.Use(middleware.AuthMiddleware)
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterTagNameFunc(func(fld reflect.StructField) string {
