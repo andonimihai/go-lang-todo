@@ -2,6 +2,7 @@ package controller
 
 import (
 	"go-gin-todo/entity"
+	validator "go-gin-todo/lib"
 	"go-gin-todo/service"
 	"net/http"
 
@@ -30,13 +31,11 @@ func GetAllTodos(ctx *gin.Context) {
 // @Success 201 {object} entity.Todo
 // @Router /todo [post]
 func AddTodo(ctx *gin.Context) {
-	todo := entity.UpsertTodo{}
-
-	if err := ctx.BindJSON(&todo); err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+	var todo entity.UpsertTodo
+	if err := ctx.ShouldBind(&todo); err != nil {
+		validator.HandleBindingError(err, ctx)
 		return
 	}
-
 	newTodo := service.CreateTodo(todo.Title)
 	ctx.JSON(http.StatusCreated, &newTodo)
 }
@@ -71,8 +70,8 @@ func UpdateTodo(ctx *gin.Context) {
 	id := ctx.Param("id")
 	todo := entity.UpsertTodo{}
 
-	if err := ctx.BindJSON(&todo); err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+	if err := ctx.ShouldBind(&todo); err != nil {
+		validator.HandleBindingError(err, ctx)
 		return
 	}
 

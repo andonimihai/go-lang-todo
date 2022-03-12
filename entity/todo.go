@@ -11,5 +11,5 @@ type Todo struct {
 }
 
 type UpsertTodo struct {
-	Title string `json:"title"`
+	Title string `json:"title" binding:"required"`
 }
