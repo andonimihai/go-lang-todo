@@ -4,10 +4,12 @@ import (
 	"go-gin-todo/controller"
 	"go-gin-todo/docs"
 	"go-gin-todo/entity"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/joho/godotenv"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -21,6 +23,11 @@ var Router *gin.Engine
 // @host localhost:3009
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	entity.ConnectDB()
 
 	Router = gin.New()
