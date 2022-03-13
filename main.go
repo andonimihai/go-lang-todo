@@ -22,10 +22,12 @@ import (
 
 var Router *gin.Engine
 
-// @title Swagger Example API
+// @title Simple Todo API
 // @version 1.0
-// @description This is a sample server Petstore server.
-
+// @description This is a server to manage todos
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 // @host localhost:3009
 
 func main() {
@@ -41,8 +43,6 @@ func main() {
 	docs.SwaggerInfo.BasePath = "/api"
 
 	Router.Use(gin.Logger())
-	// using the auth middle ware to validate api requests
-	Router.Use(middleware.AuthMiddleware)
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterTagNameFunc(func(fld reflect.StructField) string {
@@ -60,6 +60,8 @@ func main() {
 
 	api := Router.Group("/api")
 	{
+		// using the auth middle ware to validate api requests
+		api.Use(middleware.AuthMiddleware)
 		todoRouter := api.Group("/todo")
 		{
 			todoRouter.GET("/", controller.GetAllTodos)

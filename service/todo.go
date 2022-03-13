@@ -11,15 +11,15 @@ const (
 	Completed TodoState = "completed"
 )
 
-func GetAllTodos() []entity.Todo {
+func GetAllTodos(user entity.User) []entity.Todo {
 	var todos []entity.Todo
-	entity.DB.Find(&todos).Limit(10).Offset(0)
+	entity.DB.Where(&entity.Todo{UserID: user.ID}).Find(&todos).Limit(10).Offset(0)
 	return todos
 }
 
-func CreateTodo(title string) entity.Todo {
+func CreateTodo(title string, user entity.User) entity.Todo {
 
-	todo := entity.Todo{Title: title, State: string(Open)}
+	todo := entity.Todo{Title: title, State: string(Open), UserID: user.ID}
 
 	result := entity.DB.Create(&todo)
 
@@ -30,9 +30,9 @@ func CreateTodo(title string) entity.Todo {
 	return todo
 }
 
-func GetTodoById(id string) (entity.Todo, error) {
+func GetTodoById(id string, user entity.User) (entity.Todo, error) {
 	var todo entity.Todo
-	result := entity.DB.First(&todo, id)
+	result := entity.DB.Where(&entity.Todo{UserID: user.ID}).First(&todo, id)
 
 	if result.Error != nil {
 		return todo, result.Error
@@ -42,9 +42,9 @@ func GetTodoById(id string) (entity.Todo, error) {
 
 }
 
-func UpdateTodoName(id string, newTitle string) (entity.Todo, error) {
+func UpdateTodoName(id string, newTitle string, user entity.User) (entity.Todo, error) {
 	var todo entity.Todo
-	result := entity.DB.First(&todo, id)
+	result := entity.DB.Where(&entity.Todo{UserID: user.ID}).First(&todo, id)
 
 	if result.Error != nil {
 		return todo, result.Error
@@ -60,9 +60,9 @@ func UpdateTodoName(id string, newTitle string) (entity.Todo, error) {
 	return todo, nil
 }
 
-func CompleteTodo(id string) (entity.Todo, error) {
+func CompleteTodo(id string, user entity.User) (entity.Todo, error) {
 	var todo entity.Todo
-	result := entity.DB.First(&todo, id)
+	result := entity.DB.Where(&entity.Todo{UserID: user.ID}).First(&todo, id)
 
 	if result.Error != nil {
 		return todo, result.Error
@@ -79,12 +79,11 @@ func CompleteTodo(id string) (entity.Todo, error) {
 
 }
 
-func DeleteTodo(id string) error {
-	result := entity.DB.Delete(&entity.Todo{}, id)
+func DeleteTodo(id string, user entity.User) error {
+	result := entity.DB.Where("user_id = ?", user.ID).Where("id = ?", id).Delete(&entity.Todo{})
 	if result.Error != nil {
 		return result.Error
 	}
 
 	return nil
-
 }

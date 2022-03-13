@@ -2,8 +2,9 @@ package middleware
 
 import (
 	"context"
-	"fmt"
+	"go-gin-todo/entity"
 	"go-gin-todo/lib"
+	"go-gin-todo/service"
 	"net/http"
 	"strings"
 
@@ -25,16 +26,30 @@ func AuthMiddleware(ctx *gin.Context) {
 	//verify token
 	token, err := client.VerifyIDToken(context.Background(), idToken)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		ctx.Abort()
 		return
 	}
 	user, err := client.GetUser(context.Background(), token.UID)
 	if err != nil {
-		panic(err)
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		ctx.Abort()
+		return
 	}
 
-	fmt.Print(user.Email, user.UID, user.PhotoURL, user.DisplayName)
+	dbUser, err := service.UpsertUser(entity.UpsertUser{
+		Name:   user.DisplayName,
+		Email:  user.Email,
+		UserId: user.UID,
+		Avatar: user.PhotoURL,
+	})
 
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		ctx.Abort()
+		return
+	}
+
+	ctx.Set("user", dbUser)
 	ctx.Next()
 }

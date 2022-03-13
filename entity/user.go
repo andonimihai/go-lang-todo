@@ -4,9 +4,17 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	FirstName string
-	LastName  string
-	EmailName string
-	Todos     []Todo     `gorm:"foreignKey:UserID"`
-	TodoLists []TodoList `gorm:"foreignKey:UserID"`
+	Name       string
+	Email      string `gorm:"uniqueIndex"`
+	ImageUrl   string
+	ExternalId string
+	Todos      []Todo     `gorm:"foreignKey:UserID"`
+	TodoLists  []TodoList `gorm:"foreignKey:UserID"`
+}
+
+type UpsertUser struct {
+	Name   string
+	UserId string
+	Email  string
+	Avatar string
 }

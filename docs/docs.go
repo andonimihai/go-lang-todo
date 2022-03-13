@@ -18,6 +18,11 @@ const docTemplate = `{
     "paths": {
         "/todo": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Fetch a list of Todos that belongs to logged in user",
                 "produces": [
                     "application/json"
@@ -36,6 +41,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Add a new todo to the list",
                 "consumes": [
                     "application/json"
@@ -56,8 +66,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/entity.Todo"
                         }
@@ -67,6 +77,11 @@ const docTemplate = `{
         },
         "/todo/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "get Todo by ID",
                 "consumes": [
                     "application/json"
@@ -94,6 +109,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "update Todo by ID",
                 "consumes": [
                     "application/json"
@@ -130,6 +150,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "delete Todo by ID",
                 "consumes": [
                     "application/json"
@@ -159,6 +184,11 @@ const docTemplate = `{
         },
         "/todo/{id}/complete": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "complete Todo by ID",
                 "consumes": [
                     "application/json"
@@ -200,6 +230,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "state": {
+                    "type": "string"
+                },
                 "title": {
                     "type": "string"
                 },
@@ -216,6 +249,9 @@ const docTemplate = `{
         },
         "entity.UpsertTodo": {
             "type": "object",
+            "required": [
+                "title"
+            ],
             "properties": {
                 "title": {
                     "type": "string"
@@ -234,6 +270,13 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
     }
 }`
 
@@ -243,8 +286,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:3009",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Swagger Example API",
-	Description:      "This is a sample server Petstore server.",
+	Title:            "Simple Todo API",
+	Description:      "This is a server to manage todos",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

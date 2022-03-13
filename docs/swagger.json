@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a sample server Petstore server.",
-        "title": "Swagger Example API",
+        "description": "This is a server to manage todos",
+        "title": "Simple Todo API",
         "contact": {},
         "version": "1.0"
     },
@@ -10,6 +10,11 @@
     "paths": {
         "/todo": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Fetch a list of Todos that belongs to logged in user",
                 "produces": [
                     "application/json"
@@ -28,6 +33,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Add a new todo to the list",
                 "consumes": [
                     "application/json"
@@ -48,8 +58,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/entity.Todo"
                         }
@@ -59,6 +69,11 @@
         },
         "/todo/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "get Todo by ID",
                 "consumes": [
                     "application/json"
@@ -86,6 +101,11 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "update Todo by ID",
                 "consumes": [
                     "application/json"
@@ -122,6 +142,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "delete Todo by ID",
                 "consumes": [
                     "application/json"
@@ -151,6 +176,11 @@
         },
         "/todo/{id}/complete": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "complete Todo by ID",
                 "consumes": [
                     "application/json"
@@ -192,6 +222,9 @@
                 "id": {
                     "type": "integer"
                 },
+                "state": {
+                    "type": "string"
+                },
                 "title": {
                     "type": "string"
                 },
@@ -208,6 +241,9 @@
         },
         "entity.UpsertTodo": {
             "type": "object",
+            "required": [
+                "title"
+            ],
             "properties": {
                 "title": {
                     "type": "string"
@@ -225,6 +261,13 @@
                     "type": "boolean"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

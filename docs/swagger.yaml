@@ -7,6 +7,8 @@ definitions:
         $ref: '#/definitions/gorm.DeletedAt'
       id:
         type: integer
+      state:
+        type: string
       title:
         type: string
       todoListID:
@@ -20,6 +22,8 @@ definitions:
     properties:
       title:
         type: string
+    required:
+    - title
     type: object
   gorm.DeletedAt:
     properties:
@@ -32,8 +36,8 @@ definitions:
 host: localhost:3009
 info:
   contact: {}
-  description: This is a sample server Petstore server.
-  title: Swagger Example API
+  description: This is a server to manage todos
+  title: Simple Todo API
   version: "1.0"
 paths:
   /todo:
@@ -48,6 +52,8 @@ paths:
             items:
               $ref: '#/definitions/entity.Todo'
             type: array
+      security:
+      - ApiKeyAuth: []
       summary: Get all todos
     post:
       consumes:
@@ -63,10 +69,12 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/entity.Todo'
+      security:
+      - ApiKeyAuth: []
       summary: Add a new todo
   /todo/{id}:
     delete:
@@ -86,6 +94,8 @@ paths:
           description: ok
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: Delete Todo
     get:
       consumes:
@@ -104,6 +114,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/entity.Todo'
+      security:
+      - ApiKeyAuth: []
       summary: Fetch single Todo Item
     put:
       consumes:
@@ -128,6 +140,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/entity.Todo'
+      security:
+      - ApiKeyAuth: []
       summary: Update existing Todo
   /todo/{id}/complete:
     put:
@@ -147,5 +161,12 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/entity.Todo'
+      security:
+      - ApiKeyAuth: []
       summary: Complete a Todo
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
