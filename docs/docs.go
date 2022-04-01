@@ -18,12 +18,7 @@ const docTemplate = `{
     "paths": {
         "/todo": {
             "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Fetch a list of Todos that belongs to logged in user",
+                "description": "Fetch a list of Todos",
                 "produces": [
                     "application/json"
                 ],
@@ -41,11 +36,6 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "Add a new todo to the list",
                 "consumes": [
                     "application/json"
@@ -77,11 +67,6 @@ const docTemplate = `{
         },
         "/todo/{id}": {
             "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "get Todo by ID",
                 "consumes": [
                     "application/json"
@@ -109,11 +94,6 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "update Todo by ID",
                 "consumes": [
                     "application/json"
@@ -150,11 +130,6 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "delete Todo by ID",
                 "consumes": [
                     "application/json"
@@ -184,11 +159,6 @@ const docTemplate = `{
         },
         "/todo/{id}/complete": {
             "put": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "complete Todo by ID",
                 "consumes": [
                     "application/json"
@@ -236,14 +206,8 @@ const docTemplate = `{
                 "title": {
                     "type": "string"
                 },
-                "todoListID": {
-                    "type": "integer"
-                },
                 "updatedAt": {
                     "type": "string"
-                },
-                "userID": {
-                    "type": "integer"
                 }
             }
         },
@@ -269,13 +233,6 @@ const docTemplate = `{
                     "type": "boolean"
                 }
             }
-        }
-    },
-    "securityDefinitions": {
-        "ApiKeyAuth": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
         }
     }
 }`

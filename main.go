@@ -4,8 +4,6 @@ import (
 	"go-gin-todo/controller"
 	"go-gin-todo/docs"
 	"go-gin-todo/entity"
-	"go-gin-todo/lib"
-	"go-gin-todo/middleware"
 	"log"
 	"net/http"
 	"reflect"
@@ -25,9 +23,6 @@ var Router *gin.Engine
 // @title Simple Todo API
 // @version 1.0
 // @description This is a server to manage todos
-// @securityDefinitions.apikey ApiKeyAuth
-// @in header
-// @name Authorization
 // @host localhost:3009
 
 func main() {
@@ -37,7 +32,6 @@ func main() {
 	}
 
 	entity.ConnectDB()
-	lib.InitFirebaseAuth()
 
 	Router = gin.New()
 	docs.SwaggerInfo.BasePath = "/api"
@@ -60,8 +54,6 @@ func main() {
 
 	api := Router.Group("/api")
 	{
-		// using the auth middle ware to validate api requests
-		api.Use(middleware.AuthMiddleware)
 		todoRouter := api.Group("/todo")
 		{
 			todoRouter.GET("/", controller.GetAllTodos)

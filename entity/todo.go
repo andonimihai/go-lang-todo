@@ -4,10 +4,8 @@ import "gorm.io/gorm"
 
 type Todo struct {
 	gorm.Model
-	Title      string
-	State      string
-	TodoListID uint
-	UserID     uint
+	Title string
+	State string
 }
 
 type UpsertTodo struct {

@@ -19,8 +19,6 @@ func ConnectDB() {
 	}
 
 	connection.AutoMigrate(&Todo{})
-	connection.AutoMigrate(&TodoList{})
-	connection.AutoMigrate(&User{})
 
 	DB = connection
 
